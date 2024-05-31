@@ -48,3 +48,26 @@ class AssetType(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+    
+class Account(models.Model):
+    name = models.CharField(max_length=100)
+    iban = models.CharField(max_length=50, null=True, blank=True)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    description = models.TextField(null=True, blank=True)
+    created_at  = models.DateTimeField(auto_now_add = True) 
+    updated_at = models.DateTimeField(auto_now = True)
+
+    def __str__(self):
+        return self.name
+    
+class ExchangeRate(models.Model):
+    from_currency_id = models.ForeignKey(Currency, related_name='from_currency_id', on_delete=models.CASCADE)
+    to_currency_id = models.ForeignKey(Currency, related_name='to_currency_id', on_delete=models.CASCADE)
+    rate = models.FloatField()
+    rate_date = models.DateField()
+    created_at  = models.DateTimeField(auto_now_add = True) 
+    updated_at = models.DateTimeField(auto_now = True)
+
+    def __str__(self):
+        return  f"{self.from_currency_id} - {self.to_currency_id}"
+    
