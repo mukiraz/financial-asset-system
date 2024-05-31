@@ -45,7 +45,7 @@ Activate it
 ### Install python packages
 `pip3 install -r requirements.txt`
 
-### Creating Database
+### IP Configuration
 
 `cd asset_mgmt/asset_mgmt/`
 
@@ -66,7 +66,56 @@ Run these commands:
 
 `python manage.py makemigrations`
 `python manage.py migrate`
-`python manage.py runserver 0.0.0.0:8000`
+
+### Fetching Data
+
+#### Fetching Currencies from https://www.exchangerate-api.com/
+
+Run this command to fetch current exchange rates.
+
+#### Fetching updatable Asset Types.
+
+Asset types are the stock names, gold, silver or other commodities. 
+
+Run this command to get asset types.
+
+`python .\manage.py update_asset_types`
+
+All asset types are updated approximately 20 mins.
+
+##### Commodity
+
+For gold, silver or other commodities, the applicatin connects to:
+
+https://uzmanpara.milliyet.com.tr/altin-fiyatlari/
+
+and fetches the data.
+
+##### BIST100
+
+For Borsa Istanbul stocks, the application connects to:
+
+https://www.getmidas.com/canli-borsa/
+
+and fetches the data.
+
+##### For Swiss stock market
+
+This is a non profit and low cost application. Hence, the swiss stock data fetched from
+
+https://www.investing.com/equities/switzerland
+
+web page. The html content does not fetched from directly web page. The html content is obtained 
+from the web page source manually and inserted into database to the "Swiss_stock_html_content"
+table.
+
+Fetching data period is aproximately 20 minutes :(
+
+##### Crypto Assets
+
+Crypto assets are fetched from binance crypto stock market wit an API.
+
+You don't need a cryptographic authentication to reach binance API.
 
 ### Reaching the web page
 
@@ -77,7 +126,7 @@ http://{server ip address}:8000/
 
 
 
-### Prerequisites
+## Prerequisites
 
 - Python 3.6+
 - Django 3.2+
