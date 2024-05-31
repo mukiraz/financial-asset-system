@@ -1,0 +1,114 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# If your build process includes running collectstatic, you should exclude this
+# directory since it is created by the build process:
+staticfiles/
+
+# If your build process includes running 'migrate' or 'sqlmigrate' you should exclude
+# the database:
+*.sqlite3
+
+# Since pipenv uses a single lockfile:
+Pipfile.lock
+
+# ENV files
+.env
+.env.*
+
+# Docker
+*.log
+*.pid
+*.seed
+*.cover
+*.sqlite3
+
+# Backup files
+*.bak
+
+# Test coverage and profiling
+htmlcov/
+.coverage
+.tox/
+.nox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Virtual environment
+venv/
+env/
+ENV/
+.env/
+.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Sphinx documentation
+docs/_build/
+
+# PyInstaller
+# Usually these files are written by a python script from a template
+# before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Dist
+dist/
+build/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Pyre type checker
+.pyre/
+
+# Ignore html-admin directory
+html-admin/
+
+# Ignore asset-mgmt-env directory
+asset-mgmt-env/
