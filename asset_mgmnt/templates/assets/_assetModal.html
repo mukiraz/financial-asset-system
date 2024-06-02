@@ -1,0 +1,64 @@
+{% load custom_filters %}
+
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-labelledby="{{ modal_id }}Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">{{ modal_title }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="cash-warning">Nakit varlıklarınız için sadece nakit bilgisi giriniz.</p>
+                        </div>
+                    </div>
+                    <form method="post" class="row g-3 needs-validation" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" id="{{ form_prefix }}_asset_id" name="{{ form_prefix }}_asset_id">
+                        <div class="col-md-4">
+                            <label for="{{ form_prefix }}_asset_account" class="form-label">{{ form.account.label }}</label>
+                            {{ form.account|add_class:form_prefix }}
+                            <div class="invalid-feedback">Hesap seçiniz.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form_prefix }}_asset_asset_type" class="form-label">{{ form.asset_type.label }}</label>
+                            {{ form.asset_type|add_class:form_prefix }}
+                            <div class="invalid-feedback">Varlık Türü seçiniz.</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="{{ form_prefix }}_asset_buy_date" class="form-label">{{ form.buy_date.label }}</label>
+                            {{ form.buy_date|add_class:form_prefix }}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="{{ form_prefix }}_asset_buy_unit_price" class="form-label">{{ form.buy_unit_price.label }}</label>
+                            {{ form.buy_unit_price|add_class:form_prefix }}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="{{ form_prefix }}_asset_number" class="form-label">{{ form.number.label }}</label>
+                            {{ form.number|add_class:form_prefix }}
+                            <div class="valid-feedback">Harika!</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="{{ form_prefix }}_asset_unit_type" class="form-label">{{ form.unit_type.label }}</label>
+                            {{ form.unit_type|add_class:form_prefix }}
+                            <div class="invalid-feedback">Birim seçiniz.</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="{{ form_prefix }}_asset_currency" class="form-label">{{ form.currency.label }}</label>
+                            {{ form.currency|add_class:form_prefix }}
+                            <div class="invalid-feedback">Para Birimi seçiniz.</div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary text-white" name="operation" value="{{ operation }}" type="submit">{{ submit_button_text }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>

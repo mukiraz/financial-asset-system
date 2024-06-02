@@ -1,0 +1,271 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block main %}
+  <div class="row">
+    <div class="col template-demo">
+      <button data-bs-toggle="modal" data-bs-target="#newAccount" type="button" class="btn btn-primary text-white">Yeni Hesap Ekle</button>
+    </div>
+  </div>
+
+  {% if form_message %}
+    <div class="row mt-3" id="alert">
+      <div class="col-md-5">
+        <div class="alert alert-{{ alert_class }}" role="alert">{{ form_message }}</div>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row mt-3">
+    {% if accounts_count != 0 %}
+      <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Hesaplar</h4>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th style="width: 20%">Hesap Adı</th>
+                    <th style="width: 20%">IBAN</th>
+                    <th style="width: 5%">Döviz</th>
+                    <th style="width: 45%">Tanım</th>
+                    <th style="width: 5%">Sil</th>
+                    <th style="width: 5%">Güncelle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for account in accounts %}
+                    <tr>
+                      <td>{{ account.name }}</td>
+                      <td>{{ account.iban }}</td>
+                      <td>{{ account.currency }}</td>
+                      <td>{{ account.description }}</td>
+                      <td>
+                        <button data-account-id="{{account.pk}}" data-bs-toggle="modal" data-bs-target="#deleteAccountModal" type="button" class="btn btn-danger btn-rounded btn-sm btn-fw"><i class="fa-solid fa-trash text-white"></i></button>
+                      </td>
+                      <td>
+                        <button data-account-id="{{account.pk}}"
+                                data-account-name="{{account.name}} "
+                                data-account-iban="{{account.iban}}"
+                                data-account-currency="{{account.currency.pk}}"
+                                data-account-description="{{account.description}}"                                
+                                data-bs-toggle="modal" 
+                                data-bs-target="#updateAccountModal" 
+                                type="button" class="btn btn-info btn-rounded btn-sm btn-fw"><i class="fa-solid fa-pen-to-square text-white"></i></button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <h3>Henüz Banka Hesabı oluşturulmamış. Yeni hesap ekleyiniz. </h3>
+
+    {% endif %}
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Hesap Silinecek</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 class="text-danger" >Hesabı silmek istediğinizden emin misiniz?</h5>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="deleteid" id="deleteinput">
+
+            <button type="submit" value="deleteAccount" name="operation" class="btn btn-danger me-2">Sil</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Account Modal -->
+  <div class="modal fade" id="newAccount" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Yeni Hesap Ekle</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <form method="POST" class="forms-sample needs-validation" novalidate>
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="exampleInputName1">Hesap Adı</label>
+                    <input type="text" class="form-control" name="name" placeholder="Hesap Adı" required />
+                    <div class="valid-feedback">Başarılı!</div>
+                    <div class="invalid-feedback">Bu alanı doldurunuz!</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail3">IBAN</label>
+                    <input type="text" class="form-control" name="iban" placeholder="IBAN" required />
+                    <div class="valid-feedback">Başarılı!</div>
+                    <div class="invalid-feedback">Bu alanı doldurunuz!</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleFormControlSelect3">Para Birimi</label>
+                    <select name="currency" class="form-select form-select-sm text-dark">
+                      {% for currency in currencies %}
+                          <option value="{{currency.id}}">{{currency.currency_code}}</option>
+                      {% endfor %} 
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="exampleInputEmail3">Açıklama</label>
+                    <textarea class="form-control" style="height: 100px" placeholder="Açıklama" name="description"></textarea>
+                  </div>
+                  <button type="submit" value="insertAccount" name="operation" class="btn btn-primary me-2">Kaydet</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Update Account Modal-->
+
+  <div class="modal fade" id="updateAccountModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Hesabı Güncelle</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <form method="POST" class="forms-sample needs-validation" novalidate>
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="updateInputAccountName">Hesap Adı</label>
+                    <input type="text" class="form-control" id="updateInputAccountName" name="name" placeholder="Hesap Adı" required />
+                    <div class="valid-feedback">Başarılı!</div>
+                    <div class="invalid-feedback">Bu alanı doldurunuz!</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="updateInputAccountIBAN">IBAN</label>
+                    <input type="text" class="form-control" id="updateInputAccountIBAN" name="iban" placeholder="IBAN" required />
+                    <div class="valid-feedback">Başarılı!</div>
+                    <div class="invalid-feedback">Bu alanı doldurunuz!</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="updateInputAccountCurrency">Para Birimi</label>
+                    <select name="currency" class="form-select form-select-sm text-dark" id="updateInputAccountCurrency">
+                      {% for currency in currencies %}
+                          <option value="{{currency.id}}">{{currency.currency_code}}</option>
+                      {% endfor %} 
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="updateInputAccountDescription">Açıklama</label>
+                    <textarea class="form-control" style="height: 100px" id="updateInputAccountDescription" placeholder="Açıklama" name="description"></textarea>
+                  </div>
+                  <input type="hidden" name="pk" id="updateInputAccountId">
+                  <button type="submit" value="updateAccount" name="operation" class="btn btn-primary me-2">Kaydet</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block customJs %}
+  <script>
+    const forms = document.querySelectorAll('.needs-validation');
+    const deleteModal = document.getElementById('deleteAccountModal');
+    const updateModal = document.getElementById('updateAccountModal');
+
+    
+    document.addEventListener('DOMContentLoaded', function () {
+      const alertElement = document.getElementById('alert')
+      if (alertElement) {
+        setTimeout(function () {
+          alertElement.style.transition = 'opacity 1s'
+          alertElement.style.opacity = '0' // Fade out the alert
+          setTimeout(function () {
+            alertElement.style.display = 'none' // Hide the alert
+          }, 500) // Adjust the timing to match the transition duration
+        }, 1500)
+      }
+    });
+
+    if (deleteModal) {
+      deleteModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const object_id = button.getAttribute('data-account-id');
+        const delete_input = document.getElementById('deleteinput');
+        delete_input.value = object_id;
+      })
+    };
+    
+    if (updateModal) {
+      updateModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const account_id = button.getAttribute('data-account-id');
+        const account_name = button.getAttribute('data-account-name');
+        const account_iban = button.getAttribute('data-account-iban');
+        const account_currency = button.getAttribute('data-account-currency');
+        const account_description = button.getAttribute('data-account-description');
+        
+        const updateInputAccountId = document.getElementById('updateInputAccountId');
+        const updateInputAccountName = document.getElementById('updateInputAccountName');
+        const updateInputAccountIBAN = document.getElementById('updateInputAccountIBAN');
+        const updateInputAccountCurrency = document.getElementById('updateInputAccountCurrency');
+        const updateInputAccountDescription = document.getElementById('updateInputAccountDescription');
+
+        updateInputAccountId.value = account_id;
+        updateInputAccountName.value = account_name;
+        updateInputAccountIBAN.value = account_iban;
+        updateInputAccountCurrency.value = account_currency;
+        updateInputAccountDescription.value = account_description;     
+      })
+    };
+
+
+    
+    Array.from(forms).forEach((form) => {
+      form.addEventListener(
+        'submit',
+        (event) => {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+    
+          form.classList.add('was-validated')
+        },
+        false
+      )
+    })
+  </script>
+{% endblock %}

@@ -124,8 +124,6 @@ open a browser and go to the server IP address:
 http://{server ip address}:8000/
 
 
-
-
 ## Prerequisites
 
 - Python 3.6+

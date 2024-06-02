@@ -1,0 +1,345 @@
+{% extends 'layout.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block customCSS %}
+  <style>
+    .statistics-item {
+      margin-right: calc(7% - 10px);
+    }
+    
+    .statistics-item:last-child {
+      margin-right: 0; /* Remove right margin from the last item */
+    }
+    
+    .buttons-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .buttons-item {
+      flex: 0 0 auto;
+      margin-right: 10px;
+    }
+    .buttons-item button {
+      width: 100%;
+    }
+    .buttons-item:last-child {
+      margin-right: 0;
+    }
+    @media (max-width: 768px) {
+      .buttons-wrapper {
+        flex-direction: column;
+      }
+      .buttons-item {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+      .buttons-item:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .dropdown-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    
+    .dropdown-container .dropdown {
+      margin-left: 5px;
+    }
+    
+    .dropdown-container .dropdown button {
+      width: 100px; /* Buton genişliklerini eşitlemek için */
+    }
+
+    @media (max-width: 767.98px) {
+      .dropdown-container {
+        justify-content: flex-start;
+      }
+    }
+    
+    
+    
+  </style>
+{% endblock %}
+
+{% block main %}
+
+  <div id="category_id_data" data-category-id="{{category.pk}}"  data-is-auto-updated="{{category.is_auto_updated}}"></div>
+
+  {% if form_message %}
+    <div class="row mt-3" id="alert">
+      <div class="col-md-5">
+        <div class="alert alert-{{ alert_class }}" role="alert">{{ form_message }}</div>
+      </div>
+    </div>
+  {% endif %}
+
+  
+
+  {% if assets_count != 0 %}
+    <div class="container-fluid">
+      <div class="row mt-2">
+        <h2 class="mb-4">Varlık Özeti</h2>
+        {% for currency in currencies %}
+          {% with value=total_calculated_parities|get_item:currency.currency_code %}
+            <div class="col-12 col-sm-6 col-md-3 mb-3">
+              <div class="statistics-item">
+                <p>{{ currency }} Değeri</p>
+                <h3>{{ value|floatformat:2 }}</h3>
+              </div>
+            </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if assets_count != 0 %}
+  <div class="row mt-3">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card card-rounded">
+        <div class="card-body">
+          <div class="d-sm-flex justify-content-between align-items-start">
+            <div>
+              <h4 class="card-title card-title-dash">Varlık Performansı</h4>
+              <p class="card-subtitle card-subtitle-dash">Burada varlığınıza yönlendirdiğiniz meblağ ve günlük performansı yer alır.</p>
+            </div>
+            <div class="dropdown-container">
+              <div class="dropdown me-2">
+                <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Parite </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {% for currency in currencies  %}
+                    <a class="dropdown-item" data-currency-id="{{currency.pk}}" >{{currency.currency_code}}</a>                  
+                  {% endfor %}
+                  
+
+                </div>
+              </div>
+              <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Periyod </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                  <a class="dropdown-item" data-time-period="daily">Günlük</a>
+                  <a class="dropdown-item" data-time-period="weekly">Haftalık</a>
+                  <a class="dropdown-item" data-time-period="monthly">Aylık</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+            <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+              <h2 class="me-2 fw-bold" id="graph_parity"></h2>
+              <h4 class="me-2" id="graph_period"></h4>
+            </div>
+            <div class="me-3">
+              <div id="performanceLine-legend"></div>
+            </div>
+          </div>
+          <div class="chartjs-bar-wrapper mt-3">
+            <canvas id="performanceLine" width="603" height="150" style="display: block; box-sizing: border-box; height: 150px; width: 603px;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  
+  {% endif %}
+
+  <div class="row mt-3">
+    {% if assets_count != 0 %}
+      <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{ category.name }} varlıkları</h4>
+            <p>Varlıkların güncelleme tarihi: <strong>{{latest_asset_time}}</strong></p>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th style="width: 10%">Varlık Türü</th>
+                    <th style="width: 10%">Alım Tarihi</th>
+                    <th style="width: 10%">Birim Maliyet</th>
+                    <th style="width: 10%">Adet</th>
+                    <th style="width: 10%">Maliyet</th>
+                    <th style="width: 10%">Birim</th>
+                    <th style="width: 10%">Hesap</th>
+                    <th style="width: 10%">Son Fiyat</th>
+                    <th style="width: 10%">Güncel Değer</th>
+                    <th style="width: 10%">Değişim</th>
+                    <th style="width: 3%">Sil</th>
+                    <th style="width: 3%">Güncelle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for asset in assets %}
+                    <tr>
+                      <td>{{ asset.asset_type.name }}</td>
+                      <td>{{ asset.buy_date }}</td>
+                      <td>{{ asset.buy_unit_price|floatformat:2 }}</td>
+                      <td>{{ asset.number|floatformat:2 }}</td>
+                      <td>{{ asset.cost|floatformat:2 }}</td>
+                      <td>{{ asset.unit_type.name }}</td>
+                      <td>{{ asset.account.name }}</td>
+                      <td>{{ asset.current_price|floatformat:2 }} {{ asset.currency.currency_code }}</td>
+                      <td class="text-{{ asset.profit_decoration }}">{{ asset.instant_value|floatformat:2 }} {{ asset.currency.currency_code }}</td>
+                      <td class="text-{{ asset.profit_decoration }}">{{ asset.profit|floatformat:2 }} {{ asset.currency.currency_code }} (%{{ asset.percentage|floatformat:2 }})</td>
+                      <td>
+                        <button data-asset-id="{{ asset.pk }}" data-asset-type="{{ asset.number|stringformat:'0.2f' }} {{ asset.unit_type.name }} {{ asset.asset_type.name }}" data-bs-toggle="modal" data-bs-target="#deleteAssetModal" type="button" class="btn btn-danger btn-rounded btn-sm btn-fw"><i class="fa-solid fa-trash text-white"></i></button>
+                      </td>
+                      <td>
+                        <button data-asset-asset-id="{{ asset.pk }}" 
+                        data-asset-asset-type="{{ asset.asset_type.pk }}" 
+                        data-asset-buy-date="{{ asset.buy_date }}" 
+                        data-asset-buy-unit-price="{{ asset.buy_unit_price }}" 
+                        data-asset-number="{{ asset.number }}" 
+                        data-asset-unit-type="{{ asset.unit_type.pk }}" 
+                        data-asset-account="{{ asset.account.pk }}" 
+                        data-asset-currency="{{ asset.currency.pk }}" 
+                        data-bs-toggle="modal" data-bs-target="#updateAssetModal" type="button" class="btn btn-info btn-rounded btn-icon"><i class="fa-solid fa-pen-to-square text-white"></i></button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <h3>Henüz varlık oluşturulmamış. Yeni varlık oluşturabilirsiniz.</h3>
+    {% endif %}
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteAssetModal" tabindex="-1" aria-labelledby="deleteAssetModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Varlık Silinecek</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 class="text-danger" id="deletAlertHeader"></h5>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="deleteid" id="deleteinput" />
+
+            <button type="submit" value="delete" name="operation" class="btn btn-danger me-2">Sil</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include for update asset modal -->
+  {% include 'assets/_assetModal.html' with modal_id='updateAssetModal' modal_title='Varlık Güncelle' submit_button_text='Güncelle' operation='update' form=update_asset_form form_prefix='update' %}
+
+  <!-- Include for insert asset modal -->
+  {% include 'assets/_assetModal.html' with modal_id='insertAssetModal' modal_title='Yeni Varlık Ekle' submit_button_text='Kaydet' operation='insert' form=create_asset_form form_prefix='insert' %}
+
+  
+
+  <!-- New Asset Type Modal -->
+  <div class="modal fade" id="newAssetTypeModal" tabindex="-1" aria-labelledby="newAssetTypeModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Yeni Varlık Tipi</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 class="text-danger" id="deletAlertHeader"></h5>
+          <form method="post" class="row g-3 needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="col-md-5">
+              <label for="ins_asset_type" class="form-label">Varlık Tipi</label>
+              <input type="text" class="form-control" name="name" id="ins_asset_type" required />
+              <div class="valid-feedback">Güzel!</div>
+              <div class="invalid-feedback">Varlık Tipi Giriniz!</div>
+            </div>
+            <div class="col-md-5">
+              <label for="ins_current_price" class="form-label">Güncel Değeri</label>
+              <input type="number" class="form-control" name="current_price" id="ins_current_price" min="0" step="any" required />
+              <div class="valid-feedback">Güzel!</div>
+              <div class="invalid-feedback">Güncel Değerini Giriniz!</div>
+            </div>
+            <div class="col-md-12">
+              <label for="ins_description" class="form-label">Tanım</label>
+              <input type="text" class="form-control" name="description" id="ins_description" />
+            </div>
+
+            <div class="col-12">
+              <button class="btn btn-primary" name="operation" value="insert_asset_type" type="submit">Ekle</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Asset Type Modal -->
+  <div class="modal fade" id="updateAssetTypeModal" tabindex="-1" aria-labelledby="updateAssetTypeModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Varlık Tipi Güncelle / Sil</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5 class="text-danger" id="deletAlertHeader"></h5>
+          <form method="post" class="row g-3 needs-validation" novalidate>
+            {% csrf_token %}
+            <!-- Varlık Türü -->
+            <div class="col-md-5">
+              <label for="upt_asset_type_asset_type" class="form-label">Varlık Türü</label>
+              <select class="form-select text-dark" id="upt_asset_type_asset_type" name="asset_type" required>
+                <option selected disabled value="">Seçiniz...</option>
+                {% for asset_type in asset_types %}
+                  <option data-asset-type-id="{{ asset_type.id }}" data-asset-type-name="{{ asset_type.name }}" data-asset-type-current-price="{{ asset_type.current_price }}" data-asset-type-description="{{ asset_type.description }}" value="{{ asset_type.pk }}">{{ asset_type.name }}</option>
+                {% endfor %}
+              </select>
+              <div class="invalid-feedback">Varlık Türü seçiniz.</div>
+            </div>
+
+            <!-- / Varlık Türü -->
+            <div class="col-md-5">
+              <label for="ins_current_price" class="form-label">Güncel Değeri</label>
+              <input type="number" class="form-control" name="current_price" id="upt_current_price" min="0" step="any" required />
+              <div class="valid-feedback">Güzel!</div>
+              <div class="invalid-feedback">Güncel Değerini Giriniz!</div>
+            </div>
+            <div class="col-md-12">
+              <label for="ins_description" class="form-label">Tanım</label>
+              <input type="text" class="form-control" name="description" id="upt_description" />
+            </div>
+            <input type="hidden" name="asset_type_id" id="asset_type_id" />
+            <div class="col-3">
+              <button class="btn btn-primary" name="operation" value="update_asset_type" type="submit">Güncelle</button>
+            </div>
+            <div class="col-3">
+              <button class="btn btn-danger" name="operation" value="delete_asset_type" type="submit">Sil</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block customJs %}
+  <script src="{% static '/js/custom-charts.js' %}"></script>
+
+  <script src="{% static '/js/asset.js' %}"></script>
+{% endblock %}

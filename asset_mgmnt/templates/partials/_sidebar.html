@@ -1,0 +1,36 @@
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+  <ul class="nav">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url "index" %}">        
+        <i class="menu-icon mdi"><i class="fa-solid fa-gauge"></i></i>
+        <span class="menu-title">Dashboard</span>
+      </a>
+    </li>    
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="collapse" href="#accounts" aria-expanded="false" aria-controls="accounts">
+        <i class="mdi menu-icon"><i class="fa-solid fa-file-invoice"></i></i>        
+        <span class="menu-title">Hesaplar</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse" id="accounts">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link" href="{% url "accounts" %}">Banka Hesapları</a></li>
+        </ul>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="collapse" href="#assets" aria-expanded="false" aria-controls="assets">
+        <i class="menu-icon mdi "><i class="fa-solid fa-money-bill"></i></i>
+        <span class="menu-title">Varlıklar</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse" id="assets">
+        <ul class="nav flex-column sub-menu">
+          {% for category in categories %}
+            <li class="nav-item"> <a class="nav-link"  href={% url "asset" category.id %}>{{category.name}}</a></li>
+          {% endfor %}          
+        </ul>
+      </div>
+    </li>
+  </ul>
+</nav>

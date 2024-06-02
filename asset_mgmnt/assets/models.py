@@ -71,3 +71,75 @@ class ExchangeRate(models.Model):
     def __str__(self):
         return  f"{self.from_currency_id} - {self.to_currency_id}"
     
+class Asset(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    asset_type = models.ForeignKey(AssetType, on_delete=models.CASCADE)
+    buy_date = models.DateField(null=True, blank=True)
+    buy_unit_price = models.FloatField()
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    number =  models.FloatField()
+    unit_type = models.ForeignKey(UnitType, on_delete=models.CASCADE)
+    created_at  = models.DateTimeField(auto_now_add = True) 
+    updated_at = models.DateTimeField(auto_now = True)
+
+    @property
+    def current_price(self):
+        current_price = self.asset_type.current_price
+        return  current_price
+    
+    @property
+    def cost(self):
+        cost = self.number * self.buy_unit_price
+        return  cost
+    
+    @property
+    def instant_value(self):
+        instant_value = self.number * self.current_price
+        return  instant_value
+    
+    @property
+    def profit_decoration(self):
+        if self.instant_value < self.cost:
+            return 'danger'
+        else:
+            return 'success'
+        
+    @property
+    def profit(self):
+        profit = self.instant_value - self.cost                    
+        return profit
+
+    @property
+    def percentage(self):
+        try:
+            percentage = ((self.instant_value / self.cost) - 1) *100
+        except ZeroDivisionError:
+            percentage = 0
+        return percentage
+    
+    @property
+    def calculated_parities(self):
+        currencies = Currency.objects.all()
+        calculated_parities = {}
+        for currency in currencies:
+            curr = Currency.objects.get(currency_code = currency)
+            rate = ExchangeRate.objects.get(
+                from_currency_id=self.currency.pk, 
+                to_currency_id = curr.pk).rate
+            calculated_parities[curr.currency_code] = rate * self.instant_value
+        return calculated_parities
+    
+    def __str__(self):
+        return str(self.asset_type)
+    
+class AssetTimeData(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    price = models.FloatField()
+    date = models.DateField()
+    created_at  = models.DateTimeField(auto_now_add = True) 
+    updated_at = models.DateTimeField(auto_now = True)
+
+    def __str__(self):
+        return f"{self.category.name}-{self.currency.currency_code}-{self.date}"
+    
