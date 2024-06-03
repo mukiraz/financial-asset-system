@@ -13,7 +13,8 @@ class BaseTemplateObjects():
       self.objects = {
          "message" : f"{web_page} buradan {verb}",
          "time_slogan" : self.get_time_slogan(),
-         "categories": self.get_categories()
+         "categories": self.get_categories(),
+         "title":"Finansal Varlık Sistemi "
       }
 
    def get_categories(self, is_all=True, is_liquid=True):
@@ -54,6 +55,7 @@ class PageObjects(BaseTemplateObjects):
       self.objects['currencies'] = Currency.objects.all()
 
    def get_account_page_objects(self):
+      self.objects['title'] += "| Hesaplar"
       self.objects['accounts'] = Account.objects.all().order_by('name')
       self.objects['accounts_count'] = Account.objects.all().count()
       return self.objects
@@ -78,6 +80,7 @@ class PageObjects(BaseTemplateObjects):
       self.objects['latest_asset_time'] = latest_asset_type.updated_at.strftime("%d.%m.%Y %H:%M")
       self.objects['unit_types'] = UnitType.objects.all()
       self.objects['category'] = Category.objects.get(pk = category_id)
+      self.objects['title'] += "| " + self.objects['category'].name + " Varlıkları"
       assets = self.objects['assets']
       self.objects['create_asset_form'] = AssetCreateForm(category_id=category_id)
       self.objects['update_asset_form'] = AssetCreateForm(category_id=category_id)
