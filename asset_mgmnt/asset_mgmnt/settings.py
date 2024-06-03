@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-3s&)kz4ljt0i=&m$l*1!om^l2@ocmdbz9jw6^zuxqbs2uzi@$a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.132','localhost','127.0.0.1']
 
 USE_THOUSAND_SEPARATOR = True
 USE_L10N = True
@@ -44,12 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'corsheaders',
+    'sslserver',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -57,7 +60,25 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+ORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+]
+CORS_ALLOW_HEADERS = [
+    'Authorization',
+    'Content-Type',
+    'X-CSRFToken',
+]
+
 ROOT_URLCONF = 'asset_mgmnt.urls'
+
+
 
 TEMPLATES = [
     {
@@ -85,10 +106,15 @@ WSGI_APPLICATION = 'asset_mgmnt.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'asset_mngmnt',         # e.g., 'mydatabase'
+        'USER': 'postgres',          # e.g., 'mydatabaseuser'
+        'PASSWORD': '06180618',  # e.g., 'mypassword'
+        'HOST': 'localhost',          # e.g., 'localhost' or '127.0.0.1'
+        'PORT': '5432',          # e.g., '5432' (default PostgreSQL port)
     }
 }
+
 
 
 # Password validation

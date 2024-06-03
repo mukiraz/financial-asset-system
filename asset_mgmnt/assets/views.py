@@ -383,3 +383,12 @@ def asset(request, category_id):
    return render(request, 'assets/asset.html', objects)
 
 
+# In views.py
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def test_cors(request):
+    return JsonResponse({"message": "CORS is working!"})
