@@ -65,6 +65,7 @@ class PageObjects(BaseTemplateObjects):
       return self.objects
    
    def get_asset_page_objects(self, category_id):
+      
       self.objects['accounts'] = Account.objects.all().order_by('name')
       self.objects['assets'] = Asset.objects.filter(asset_type__category__pk = category_id).order_by('account','asset_type__name')
       self.objects['assets_count'] = Asset.objects.filter(asset_type__category__pk = category_id).count()
@@ -311,8 +312,7 @@ def accounts(request):
 def asset(request, category_id):
    category = get_object_or_404(Category, pk=category_id)
    page_objects = PageObjects(f"{category.name} varlıklarınızı", "yönetebilirsiniz")
-   objects = page_objects.get_asset_page_objects(category_id)
-         
+   objects = page_objects.get_asset_page_objects(category_id)         
    
 
    if request.method == "POST":
@@ -377,4 +377,7 @@ def asset(request, category_id):
          name_asset_type = delete_asset_type.name
          delete_asset_type.delete()
          objects = page_objects.get_asset_page_objects(category_id)
-         objects = page_objects.alert_message(name_asset_type, "silindi", "danger")  
+         objects = page_objects.alert_message(name_asset_type, "silindi", "danger")
+   else:
+      return render(request, 'assets/asset.html', objects)   
+   
