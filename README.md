@@ -73,13 +73,15 @@ Run these commands:
 
 Run this command to fetch current exchange rates.
 
+`python3 manage.py update_currencies`
+
 #### Fetching updatable Asset Types.
 
 Asset types are the stock names, gold, silver or other commodities. 
 
 Run this command to get asset types.
 
-`python .\manage.py update_asset_types`
+`python3 manage.py update_asset_types`
 
 All asset types are updated approximately 20 mins.
 

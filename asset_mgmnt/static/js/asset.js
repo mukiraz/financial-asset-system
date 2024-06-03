@@ -36,7 +36,7 @@ function installLineChart() {
     currencyDropdownItems.forEach(item => {
         item.addEventListener('click', function () {
             selectedCurrency = this.getAttribute('data-currency-id');
-            endpoint = `http://127.0.0.1:8000/asset/get_performance_line_data/${categoryId}/${selectedCurrency}/${selectedTime}/`;
+            endpoint = `${origin}/asset/get_performance_line_data/${categoryId}/${selectedCurrency}/${selectedTime}/`;
             createLineChart(endpoint,'performanceLine');
             graphParity.innerText = this.innerText;
         });
@@ -45,13 +45,13 @@ function installLineChart() {
     timeDropdownItems.forEach(item => {
         item.addEventListener('click', function () {
             selectedTime = this.getAttribute('data-time-period');
-            endpoint = `http://127.0.0.1:8000/asset/get_performance_line_data/${categoryId}/${selectedCurrency}/${selectedTime}/`;
+            endpoint = `${origin}/asset/get_performance_line_data/${categoryId}/${selectedCurrency}/${selectedTime}/`;
             createLineChart(endpoint,'performanceLine');
             graphPeriod.innerText = this.innerText;
         });
     });
 
-    endpoint = `http://127.0.0.1:8000/asset/get_performance_line_data/${categoryId}/${selectedCurrency}/${selectedTime}/`;
+    endpoint = `${origin}/asset/get_performance_line_data/${categoryId}/${selectedCurrency}/${selectedTime}/`;
     graphParity.innerText = selectedCurrencyText;
     graphPeriod.innerText = selectedTimeText;
 
