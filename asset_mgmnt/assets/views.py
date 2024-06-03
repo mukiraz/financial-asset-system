@@ -377,7 +377,4 @@ def asset(request, category_id):
          name_asset_type = delete_asset_type.name
          delete_asset_type.delete()
          objects = page_objects.get_asset_page_objects(category_id)
-         objects = page_objects.alert_message(name_asset_type, "silindi", "danger")
-
-   
-   return render(request, 'assets/asset.html', objects)
+         objects = page_objects.alert_message(name_asset_type, "silindi", "danger")  
