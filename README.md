@@ -15,9 +15,9 @@ Welcome to the Financial Asset Management Software! This application allows user
 ## Installation
 ### Clone repository
 
-`git clone https://github.com/mukiraz/financial-asset-management.git`
+`git clone https://github.com/mukiraz/financial-asset-system.git`
 
-`cd financial-asset-management/`
+`cd financial-asset-system/`
 `cd asset_mgmt/`
 
 The application connects to https://www.exchangerate-api.com/ and fetches the parity data daily. You should sign up and get an api-key.
@@ -47,7 +47,7 @@ Activate it
 
 ### IP Configuration
 
-`cd asset_mgmt/asset_mgmt/`
+`cd asset_mngmnt/asset_mngmnt/`
 
 `nano settings.py`
 

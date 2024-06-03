@@ -6,7 +6,7 @@ from django.db.models import Q
 from .forms import AssetCreateForm
 from django.core.exceptions import ObjectDoesNotExist
 
-# Create your views here.
+
 
 class BaseTemplateObjects():   
    def __init__(self, web_page="", verb=""):
@@ -377,18 +377,4 @@ def asset(request, category_id):
          name_asset_type = delete_asset_type.name
          delete_asset_type.delete()
          objects = page_objects.get_asset_page_objects(category_id)
-         objects = page_objects.alert_message(name_asset_type, "silindi", "danger")
-
-   
-   return render(request, 'assets/asset.html', objects)
-
-
-# In views.py
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-
-@csrf_exempt
-@require_http_methods(["GET"])
-def test_cors(request):
-    return JsonResponse({"message": "CORS is working!"})
+         objects = page_objects.alert_message(name_asset_type, "silindi", "danger")  
