@@ -6,7 +6,7 @@ from django.db.models import Q
 from .forms import AssetCreateForm
 from django.core.exceptions import ObjectDoesNotExist
 
-# Create your views here.
+
 
 class BaseTemplateObjects():   
    def __init__(self, web_page="", verb=""):
@@ -381,5 +381,3 @@ def asset(request, category_id):
 
    
    return render(request, 'assets/asset.html', objects)
-
-
