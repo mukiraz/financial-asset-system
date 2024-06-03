@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Category,Currency, UnitType, SwissStockHTMLContent, AssetType, Account, ExchangeRate, Asset, DailySummary
+from .models import Category,Currency, UnitType, SwissStockHTMLContent, AssetType, Account, ExchangeRate, Asset, DailySummary, AssetTimeData
 
 # Register your models here.
 
@@ -15,3 +15,4 @@ admin.site.register(Account)
 admin.site.register(ExchangeRate)
 admin.site.register(Asset)
 admin.site.register(DailySummary)
+admin.site.register(AssetTimeData)

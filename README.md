@@ -119,6 +119,25 @@ Crypto assets are fetched from binance crypto stock market wit an API.
 
 You don't need a cryptographic authentication to reach binance API.
 
+### Adding Crontab.
+
+The application updates the currency exchange rates, asset types, daily asset summary, daily asset time data.
+
+In order to automatize it create crontab.
+
+`crontab -e`
+
+paste this scripts fo file and save it.
+
+paste full path of the "financial-asset-system" folder!
+
+
+5 8-20 * * * /usr/bin/python ~/financial-asset-system/asset_mgmt/manage.py update_asset_types
+30 20 * * * /usr/bin/python ~/financial-asset-system/asset_mgmt/manage.py update_asset_time_data
+0 8 * * * /usr/bin/python ~/financial-asset-system/asset_mgmt/manage.py update_currencies
+35 20 * * * /usr/bin/python ~/financial-asset-system/asset_mgmt/manage.py calculate_daily_summaries
+
+
 ### Reaching the web page
 
 open a browser and go to the server IP address:
