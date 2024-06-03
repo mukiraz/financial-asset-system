@@ -132,10 +132,10 @@ paste this scripts fo file and save it.
 paste full path of the "financial-asset-system" folder!
 
 
-`5 8-20 * * * /usr/bin/python ~/financial-asset-system/asset_mgmt/manage.py update_asset_types`
-`30 20 * * * /usr/bin/python ~/financial-asset-system/asset_mgmt/manage.py update_asset_time_data`
-`0 8 * * * /usr/bin/python ~/financial-asset-system/asset_mgmt/manage.py update_currencies`
-`35 20 * * * /usr/bin/python ~/financial-asset-system/asset_mgmt/manage.py calculate_daily_summaries`
+`5 8-20 * * * /usr/bin/python ~/financial-asset-system/asset_mgmnt/manage.py update_asset_types`
+`30 20 * * * /usr/bin/python ~/financial-asset-system/asset_mgmnt/manage.py update_asset_time_data`
+`0 8 * * * /usr/bin/python ~/financial-asset-system/asset_mgmnt/manage.py update_currencies`
+`35 20 * * * /usr/bin/python ~/financial-asset-system/asset_mgmnt/manage.py calculate_daily_summaries`
 
 
 ### Reaching the web page
