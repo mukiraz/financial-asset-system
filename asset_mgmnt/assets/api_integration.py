@@ -70,12 +70,43 @@ class Commodity(Asset):
 class BIST100(Asset):
     def __init__(self, url):        
         super().__init__(url)
-        stocks_list = self.fetch_data()        
-        stocks = self.convert_price_to_numeric(stocks_list, "Son")
-        stocks = stocks[0]
-        stocks["Son"] = stocks["Son"] / 100
-        self.stocks = stocks[["Hisse","Son"]]
-        self.stocks = self.rename_df_columns(self.stocks)
+        stocks_list = self.fetch_data()
+        stocks_list['current_price'] = pd.to_numeric(stocks_list['current_price'], errors='coerce')
+        self.stocks = stocks_list
+        
+        
+    def fetch_data(self):
+        response = requests.get(self.url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        table = soup.find('table', class_='stock-table w-100')
+
+        # Initialize lists to store the data
+        hisse_list = []
+        son_list = []
+
+        # Check if the table was found
+        if table:
+            # Find all rows in the tbody
+            rows = table.find('tbody', class_='table-body').find_all('tr')
+
+            for row in rows:
+                # Get the "Hisse" column (first column)
+                hisse = row.find('td', class_='val first').text.strip()
+
+                # Get the second "td" element, which corresponds to the "Son" column
+                son = row.find_all('td', class_='val')[1].text.strip()
+
+                # Append the data to the lists
+                hisse_list.append(hisse)
+                son_list.append(son.replace(".","").replace(",","."))
+        else:
+            print('Table not found')
+
+        df = pd.DataFrame({
+            'name':hisse_list,
+            'current_price':son_list
+        })
+        return df
     
     def get_stocks(self):
         return self.stocks
@@ -156,4 +187,11 @@ class CryptoCurrency():
     
     def get_crypto_names_and_prices(self):
         return self.df_crypto_names_and_prices
+    
+
+bist_100 = BIST100("https://www.getmidas.com/canli-borsa/")
+
+stocks = bist_100.get_stocks()
+
+print(stocks)
 
