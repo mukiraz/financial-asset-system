@@ -237,16 +237,21 @@ function manipulateOptionsValues() {
 function setCashValues() {
     const unitPrices = document.querySelectorAll('.unit-price')
     const cashUnits = document.querySelectorAll('.cash-unit')
+    const categoryData = document.getElementById('category_id_data');
+    const isAutoUpdated = categoryData.getAttribute('data-is-auto-updated');
 
-    unitPrices.forEach((unitPrice) => {
-        unitPrice.setAttribute('value', 1)
-        unitPrice.disabled = false
-    })
-    cashUnits.forEach((cashUnit) => {
-        cashUnit.selectedIndex = 3
-        cashUnit.setAttribute('value', 3)
-        cashUnit.disabled = false
-    })
+    if (isAutoUpdated == 'False') {
+        unitPrices.forEach((unitPrice) => {
+            unitPrice.setAttribute('value', 1)
+            unitPrice.disabled = false
+        })
+        cashUnits.forEach((cashUnit) => {
+            cashUnit.selectedIndex = 3
+            cashUnit.setAttribute('value', 3)
+            cashUnit.disabled = false
+        })
+        
+    }    
 }
 
 // Handle changes in asset type and update related fields

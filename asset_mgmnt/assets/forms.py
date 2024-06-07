@@ -1,5 +1,5 @@
 from django import forms
-from assets.models import Asset, AssetType
+from assets.models import Asset, AssetType, Account
 
 class AssetCreateForm(forms.ModelForm):
     class Meta:
@@ -33,6 +33,7 @@ class AssetCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         category_id = kwargs.pop('category_id', None)
         super().__init__(*args, **kwargs)
+        self.fields['account'].queryset = Account.objects.all().order_by('name')
         if category_id:
             self.fields['asset_type'].queryset = AssetType.objects.filter(category_id=category_id).order_by('name')
 
