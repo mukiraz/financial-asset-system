@@ -34,6 +34,6 @@ class AssetCreateForm(forms.ModelForm):
         category_id = kwargs.pop('category_id', None)
         super().__init__(*args, **kwargs)
         if category_id:
-            self.fields['asset_type'].queryset = AssetType.objects.filter(category_id=category_id)
+            self.fields['asset_type'].queryset = AssetType.objects.filter(category_id=category_id).order_by('name')
 
 

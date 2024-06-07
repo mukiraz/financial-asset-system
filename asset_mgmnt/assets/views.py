@@ -71,13 +71,16 @@ class PageObjects(BaseTemplateObjects):
       self.objects['accounts'] = Account.objects.all().order_by('name')
       self.objects['assets'] = Asset.objects.filter(asset_type__category__pk = category_id).order_by('account','asset_type__name')
       self.objects['assets_count'] = Asset.objects.filter(asset_type__category__pk = category_id).count()
-      asset_types = AssetType.objects.filter(category__pk = category_id).order_by('name')
+      asset_types = AssetType.objects.filter(category__pk = category_id).order_by('name').values()
       self.objects['asset_types'] =asset_types
       try:
          latest_asset_type = asset_types.latest('updated_at')
       except ObjectDoesNotExist:
          latest_asset_type = None
-      self.objects['latest_asset_time'] = latest_asset_type.updated_at.strftime("%d.%m.%Y %H:%M")
+      try:
+         self.objects['latest_asset_time'] = latest_asset_type.updated_at.strftime("%d.%m.%Y %H:%M")
+      except AttributeError:
+         self.objects['latest_asset_time'] = None
       self.objects['unit_types'] = UnitType.objects.all()
       self.objects['category'] = Category.objects.get(pk = category_id)
       self.objects['title'] += "| " + self.objects['category'].name + " Varlıkları"

@@ -67,6 +67,24 @@
 
 {% block main %}
 
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6 col-md-10 col-lg-10">
+        <div class="buttons-wrapper">
+          <div class="col-sm-auto col-md-auto col-lg-auto buttons-item">
+            <button data-bs-toggle="modal" data-bs-target="#insertAssetModal" type="button" class="btn btn-primary btn-sm text-white">Yeni Varlık</button>
+          </div>
+          <div class="col-sm-auto col-md-auto col-lg-auto buttons-item">
+            <button data-bs-toggle="modal" data-bs-target="#newAssetTypeModal" type="button" class="btn btn-warning btn-sm text-white asset-type-control">Yeni Varlık Tipi</button>
+          </div>
+          <div class="col-sm-auto col-md-auto col-lg-auto buttons-item">
+            <button data-bs-toggle="modal" data-bs-target="#updateAssetTypeModal" type="button" class="btn btn-info btn-sm text-white asset-type-control">Varlık Tipi Güncelle / Sil</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="category_id_data" data-category-id="{{category.pk}}"  data-is-auto-updated="{{category.is_auto_updated}}"></div>
 
   {% if form_message %}

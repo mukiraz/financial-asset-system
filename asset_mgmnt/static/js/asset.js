@@ -142,14 +142,14 @@ function setupDeleteModal(event) {
 function setupUpdateModal(event, prefix) {
     const button = event.relatedTarget;
     const asset = {
-        asset_type: button.getAttribute('data-asset-asset-type'),
+        asset_type: button.getAttribute('data-asset-asset-type').replace('.', ''),
         buy_date: formatDate(button.getAttribute('data-asset-buy-date')),
         buy_unit_price: button.getAttribute('data-asset-buy-unit-price').replace('.', '').replace(',', '.'),
         number: button.getAttribute('data-asset-number').replace('.', '').replace(',', '.'),
         unit_type: button.getAttribute('data-asset-unit-type'),
         account: button.getAttribute('data-asset-account'),
         currency: button.getAttribute('data-asset-currency'),
-        asset_id: button.getAttribute('data-asset-asset-id')
+        asset_id: button.getAttribute('data-asset-asset-id').replace('.', '')
     };
     // Format the date if it's not null or "None"
     if (asset.buy_date && asset.buy_date !== 'None') {
