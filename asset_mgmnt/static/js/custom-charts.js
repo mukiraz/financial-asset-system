@@ -56,9 +56,19 @@ async function createDoughnutChart(endpoint, elementId) {
         afterDatasetUpdate: function (chart, args, options) {
           const chartId = chart.canvas.id;
           const legendId = `${chartId}-legend`;
+          const legendContainer = document.getElementById(legendId);
+          
+          // Remove existing ul if it exists
+          const existingUl = legendContainer.querySelector('ul');
+          if (existingUl) {
+            legendContainer.removeChild(existingUl);
+          }
+      
+          // Create new ul
           const ul = document.createElement('ul');
           ul.classList.add('list-unstyled', 'row');
           
+          // Populate ul with li elements
           for (let i = 0; i < chart.data.datasets[0].data.length; i++) {
             const li = document.createElement('li');
             li.classList.add('col-4', 'col-md-3');
@@ -71,9 +81,11 @@ async function createDoughnutChart(endpoint, elementId) {
             ul.appendChild(li);
           }
           
-          document.getElementById(legendId).appendChild(ul);
+          // Append new ul to the legend container
+          legendContainer.appendChild(ul);
         }
       }]
+      
     });
   } catch (error) {
     console.error('Error creating chart:', error);
