@@ -22100,21 +22100,37 @@ code {
   display: flex;
 }
 
-.doughnutChart-legend ul,
-#doughnutChartPurple-legend ul,
-#doughnutChartPurple-dark-legend ul {
-  margin-bottom: 0;
-  display: none;
-}
-
 .doughnutChart-legend ul li,
 #doughnutChartPurple-legend ul li,
 #doughnutChartPurple-dark-legend ul li {
   list-style: none;
   color: #737F8B;
   font-size: 12px;
-  display: inline-block;
   margin-left: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Adjust font size for smaller devices */
+@media (max-width: 768px) {
+  .doughnutChart-legend ul li,
+  #doughnutChartPurple-legend ul li,
+  #doughnutChartPurple-dark-legend ul li {
+    font-size: 10px;
+  }
+}
+
+/* Flex and grid styling */
+.list-unstyled {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.list-unstyled .col-4 {
+  margin-left: 0;
 }
 
 .doughnutChart-legend ul li span,
@@ -22124,13 +22140,7 @@ code {
   height: 10px;
   border-radius: 100%;
   display: inline-block;
-  margin-right: 10px;
-}
-
-.doughnutChart-legend ul:first-child,
-#doughnutChartPurple-legend ul:first-child,
-#doughnutChartPurple-dark-legend ul:first-child {
-  display: flex;
+  margin-bottom: 5px; /* Add space between the span and text */
 }
 
 #doughnutChartAnalytic-legend ul {

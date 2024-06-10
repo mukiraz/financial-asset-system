@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block customCSS %}
   <style>
@@ -10,6 +11,8 @@
     .statistics-item:last-child {
       margin-right: 0; /* Remove right margin from the last item */
     }
+    
+
   </style>
 {% endblock %}
 
@@ -34,41 +37,24 @@
     <div class="container-fluid">
       <!-- Likit Varlıklar Sıralaması -->
       {% if liquid_asset_count != 0 %}
-      <div class="row">
-        <div class="col-md-8">
-          <div class="row mt-3">
-            <div class="col-sm-12">
-              <h2>Likit Varlıklar</h2>
-              <p>Likit varlıklar, kolaylıkla paraya çevirebileceğiniz varlıklardır.</p>
-            </div>
-
-            <div class="col-sm-12 mt-3">
-              <div class="statistics-details d-flex">
+      <div class="container-fluid">
+        <div class="row mt-2">
+          <div class="col-sm-12">
+            <h2>Likit Varlıklar</h2>
+            <p>Likit varlıklar, kolaylıkla paraya çevirebileceğiniz varlıklardır.</p>
+          </div>
+          {% for currency in currencies %}
+            {% with value=total_calculated_liquid_parities|get_item:currency.currency_code %}
+              <div class="col-12 col-sm-6 col-md-3 mb-3">
                 <div class="statistics-item">
-                  <p class="statistics-title">TRY Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_liquid_parities.TRY|floatformat:2 }}</h3>
-                </div>
-
-                <div class="statistics-item">
-                  <p class="statistics-title">CHF Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_liquid_parities.CHF|floatformat:2 }}</h3>
-                </div>
-
-                <div class="statistics-item">
-                  <p class="statistics-title">EUR Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_liquid_parities.EUR|floatformat:2 }}</h3>
-                </div>
-
-                <div class="statistics-item">
-                  <p class="statistics-title">USD Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_liquid_parities.USD|floatformat:2 }}</h3>
+                  <p>{{ currency }} Değeri</p>
+                  <h3>{{ value|floatformat:2 }}</h3>
                 </div>
               </div>
-            </div>
-          </div>
+            {% endwith %}
+          {% endfor %}
         </div>
       </div>
-      
 
       <!-- Liquid Asset Summary -->
       
@@ -83,10 +69,9 @@
                     <thead>
                       <tr>
                         <th>Varlık</th>
-                        <th>TRY</th>
-                        <th>CHF</th>
-                        <th>EUR</th>
-                        <th>USD</th>
+                        {% for currency in currencies %}
+                          <th>{{currency.currency_code}}</th>
+                          {% endfor %}
                       </tr>
                     </thead>
                     <tbody>
@@ -138,7 +123,7 @@
                         <canvas class="my-auto" id="doughnutChart-liquid" width="447" height="447" style="display: block; box-sizing: border-box; height: 447px; width: 447px;"></canvas>
                         <img src="{% static 'images/loading.gif' %}" class="loading" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Loading" />
                       </div>
-                      <div id="doughnutChart-liquid-legend" class="doughnutChart-legend mt-5 text-center"></div>
+                      <div id="doughnutChart-liquid-legend" class="doughnutChart-legend mt-5 text-center container-fluid"></div>
                     </div>
                   </div>
                 </div>
@@ -151,38 +136,23 @@
       {% endif %}
 
       {% if non_liquid_asset_count != 0 %}
-      <div class="row">
-        <div class="col-md-8">
-          <div class="row mt-3">
-            <div class="col-sm-12">
-              <h2>Likit Olmayan Varlıklar</h2>
-              <p>Likit olmayan varlıklar, kolaylıkla paraya çeviremediğimiz varlıklardır.</p>
-            </div>
 
-            <div class="col-sm-12 mt-3">
-              <div class="statistics-details d-flex">
+      <div class="container-fluid">
+        <div class="row mt-2">
+          <div class="col-sm-12">
+            <h2>Likit Olmayan Varlıklar</h2>
+            <p>Likit olmayan varlıklar, kolaylıkla paraya çeviremediğimiz varlıklardır.</p>
+          </div>
+          {% for currency in currencies %}
+            {% with value=total_calculated_non_liquid_parities|get_item:currency.currency_code %}
+              <div class="col-12 col-sm-6 col-md-3 mb-3">
                 <div class="statistics-item">
-                  <p class="statistics-title">Varlıkların TRY Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_non_liquid_parities.TRY|floatformat:2 }}</h3>
-                </div>
-
-                <div class="statistics-item">
-                  <p class="statistics-title">Varlıkların CHF Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_non_liquid_parities.CHF|floatformat:2 }}</h3>
-                </div>
-
-                <div class="statistics-item">
-                  <p class="statistics-title">Varlıkların EUR Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_non_liquid_parities.EUR|floatformat:2 }}</h3>
-                </div>
-
-                <div class="statistics-item">
-                  <p class="statistics-title">Varlıkların USD Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_non_liquid_parities.USD|floatformat:2 }}</h3>
+                  <p>{{ currency }} Değeri</p>
+                  <h3>{{ value|floatformat:2 }}</h3>
                 </div>
               </div>
-            </div>
-          </div>
+            {% endwith %}
+          {% endfor %}
         </div>
       </div>
 
@@ -198,10 +168,9 @@
                     <thead>
                       <tr>
                         <th>Varlık</th>
-                        <th>TRY</th>
-                        <th>CHF</th>
-                        <th>EUR</th>
-                        <th>USD</th>
+                        {% for currency in currencies %}
+                          <th>{{currency.currency_code}}</th>
+                          {% endfor %}
                       </tr>
                     </thead>
                     <tbody>
@@ -266,38 +235,23 @@
       {% endif %}
 
       <!-- All Assets -->
-      <div class="row">
-        <div class="col-md-8">
-          <div class="row mt-3">
-            <div class="col-sm-12">
-              <h2>Tüm Varlıklar</h2>
-              <p>Tüm varlıklar burada listelenir.</p>
-            </div>
 
-            <div class="col-sm-12 mt-3">
-              <div class="statistics-details d-flex">
+      <div class="container-fluid">
+        <div class="row mt-2">
+          <div class="col-sm-12">
+            <h2>Tüm Varlıklar</h2>
+            <p>Tüm varlıklar burada listelenir.</p>
+          </div>
+          {% for currency in currencies %}
+            {% with value=total_calculated_all_parities|get_item:currency.currency_code %}
+              <div class="col-12 col-sm-6 col-md-3 mb-3">
                 <div class="statistics-item">
-                  <p class="statistics-title">Varlıkların TRY Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_all_parities.TRY|floatformat:2 }}</h3>
-                </div>
-
-                <div class="statistics-item">
-                  <p class="statistics-title">Varlıkların CHF Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_all_parities.CHF|floatformat:2 }}</h3>
-                </div>
-
-                <div class="statistics-item">
-                  <p class="statistics-title">Varlıkların EUR Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_all_parities.EUR|floatformat:2 }}</h3>
-                </div>
-
-                <div class="statistics-item">
-                  <p class="statistics-title">Varlıkların USD Değeri</p>
-                  <h3 class="rate-percentage">{{ total_calculated_all_parities.USD|floatformat:2 }}</h3>
+                  <p>{{ currency }} Değeri</p>
+                  <h3>{{ value|floatformat:2 }}</h3>
                 </div>
               </div>
-            </div>
-          </div>
+            {% endwith %}
+          {% endfor %}
         </div>
       </div>
 
@@ -313,10 +267,9 @@
                     <thead>
                       <tr>
                         <th>Varlık</th>
-                        <th>TRY</th>
-                        <th>CHF</th>
-                        <th>EUR</th>
-                        <th>USD</th>
+                          {% for currency in currencies %}
+                          <th>{{currency.currency_code}}</th>
+                          {% endfor %}
                       </tr>
                     </thead>
                     <tbody>
