@@ -9,8 +9,16 @@ document.addEventListener('DOMContentLoaded', function () {
     disableFieldsBasedOnWelcomeText();
     handleAssetTypeChanges();
     installLineChart();
+    installDougnutChart();
 });
 
+function installDougnutChart(){
+    const categoryIdData = document.getElementById("category_id_data");
+    const categoryId = categoryIdData.getAttribute("data-category-id");
+    const endpoint = `${origin}/asset/doughnut_chart_data/asset_data/${categoryId}`;
+    createDoughnutChart(endpoint, 'assetPieGraph');
+
+}
 function installLineChart() {
     const categoryElement = document.getElementById('category_id_data');
     const categoryId = categoryElement.getAttribute('data-category-id');

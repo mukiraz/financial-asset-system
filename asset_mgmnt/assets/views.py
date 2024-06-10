@@ -124,6 +124,8 @@ class PageObjects(BaseTemplateObjects):
       # else:
       #    self.objects['general_percantage_color'] = 'success'
       #    self.objects['general_percantage_arrow'] = 'up'
+      data = self.get_assets_by_category(category_id=category_id)      
+      self.objects["doughnut_chart_data"] = self.create_doughnut_chart_data(data)
       return self.objects
    
    def summerized_asset_table(self, is_all, is_liquid):
@@ -143,7 +145,38 @@ class PageObjects(BaseTemplateObjects):
                totals[key] += parities.get(key, 0)
       return data, totals
    
+   def get_assets_by_category(self, category_id):
+    """
+    This function is used for donpughchart.
+    """
+    # Get the category object
+    category = get_object_or_404(Category, id=category_id)
+    
+    # Filter assets by the given category
+    asset_types = AssetType.objects.filter(category=category)
+    assets = Asset.objects.filter(asset_type__in=asset_types)
+
+    # List to hold the result
+    asset_parities_list = []
+
+    # Iterate through each asset and calculate the parities
+    for asset in assets:
+        # Get the total calculated parities for the asset
+        total_parities = self.get_total_calculated_parities([asset])
+        
+        # Construct the dictionary for the asset
+        asset_dict = {
+            'name': asset.asset_type.name,
+            'parities': total_parities
+        }
+        
+        # Append the asset dictionary to the list
+        asset_parities_list.append(asset_dict)
+
+    return asset_parities_list
+   
    def create_doughnut_chart_data(self,  data):
+      
       simplified_assets = [{'name': asset['name'], 'value': asset['parities']['TRY']} for asset in data]
       total_value = sum(asset['value'] for asset in simplified_assets)
 
@@ -203,16 +236,24 @@ class PageObjects(BaseTemplateObjects):
    def get_currency_data(self):
       return self.objects
    
-def prepare_doughnut_chart_data(request, data_type):
+def prepare_doughnut_chart_data(request, data_type, category_id):
+   print(data_type)
     
    page_objects = PageObjects(f"", "")
-   objects = page_objects.get_index_objects()
+   
    if data_type == "liquid_data":
+      objects = page_objects.get_index_objects()
       asset_data = objects["liquid_doughnut_chart_data"]
    elif data_type == "non_liquid_data":
+      objects = page_objects.get_index_objects()
       asset_data = objects["non_liquid_doughnut_chart_data"]
    elif data_type == "all_data":
+      objects = page_objects.get_index_objects()
       asset_data = objects["all_doughnut_chart_data"]
+   elif data_type == "asset_data":
+      objects = page_objects.get_asset_page_objects(category_id)
+      asset_data = objects["doughnut_chart_data"]
+
    return JsonResponse({
       'labels': [asset['name'] for asset in asset_data],
       'data': [asset['ratio'] for asset in asset_data],

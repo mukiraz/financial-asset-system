@@ -22,6 +22,8 @@ async function createDoughnutChart(endpoint, elementId) {
     // Destructure the necessary properties directly from the response data
     const { labels, data, backgroundColor, borderColor } = responseData;
 
+    console.log(responseData);
+
     // Get the canvas element by its ID
     const ctx = document.getElementById(elementId).getContext('2d');
 
