@@ -191,10 +191,15 @@ class PageObjects(BaseTemplateObjects):
             
       doughnut_chart_data = []
       for asset, color in zip(simplified_assets, colors):
+         try:
+            ratio = (asset['value'] / total_value) * 100
+         except ZeroDivisionError:
+            ratio = 0
+
          doughnut_chart_data.append({
                'name': asset['name'],
                'value': asset['value'],
-               'ratio': (asset['value'] / total_value) * 100,
+               'ratio': ratio,
                'color': color
          })
 
