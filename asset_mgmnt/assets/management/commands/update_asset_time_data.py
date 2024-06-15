@@ -9,20 +9,29 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         parity_calculator = BaseTemplateObjects().get_total_calculated_parities
         categories = Category.objects.all()
+        currencies = Currency.objects.all()
         now = datetime.now()
-        def insert_asset_data(asset):
-            calculated_parities = parity_calculator(asset)
-            for currency, price in calculated_parities.items():
-                currency_obj = Currency.objects.get(currency_code=currency)
-                asset_time_data = AssetTimeData(category = category,
-                                                currency = currency_obj,
-                                                price= price,
-                                                date= now
-                                                )
+
+        def insert_asset_data(category, total_prices):
+            for currency in currencies:
+                price = total_prices.get(currency.currency_code, 0)
+                asset_time_data = AssetTimeData(
+                    category=category,
+                    currency=currency,
+                    price=price,
+                    date=now
+                )
                 asset_time_data.save()
-        
+
         for category in categories:
-            filtered_assets = Asset.objects.filter(asset_type__category__pk = category.pk)
-            insert_asset_data(filtered_assets)            
+            total_prices = {currency.currency_code: 0 for currency in currencies}
+            filtered_assets = Asset.objects.filter(asset_type__category__pk=category.pk)
             
+            if filtered_assets.exists():
+                for asset in filtered_assets:
+                    calculated_parities = parity_calculator([asset])
+                    for currency_code, price in calculated_parities.items():
+                        total_prices[currency_code] += price
             
+            insert_asset_data(category, total_prices)
+

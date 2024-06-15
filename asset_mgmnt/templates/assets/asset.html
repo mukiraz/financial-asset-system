@@ -39,7 +39,7 @@
         margin-bottom: 0;
       }
     }
-
+    
     .dropdown-container {
       display: flex;
       justify-content: flex-end;
@@ -53,20 +53,40 @@
     .dropdown-container .dropdown button {
       width: 100px; /* Buton genişliklerini eşitlemek için */
     }
-
+    
     @media (max-width: 767.98px) {
       .dropdown-container {
         justify-content: flex-start;
       }
     }
     
-    
+    .chartjs-bar-wrapper {
+      height: 400px; /* Ebeveyn elementin yüksekliği */
+    }
+    canvas {
+      width: 100%;
+      height: 100%; /* Yüksekliği yüzde olarak ayarladık */
+    }
+
+    .list-unstyled li {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+  }
+
+    .add-width {
+      width: 10px;
+      height: 10px;
+      display: block;
+            border-radius: 50%;
+            margin-bottom: 5px;
+    }
     
   </style>
 {% endblock %}
 
 {% block main %}
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6 col-md-10 col-lg-10">
@@ -85,7 +105,7 @@
     </div>
   </div>
 
-  <div id="category_id_data" data-category-id="{{category.pk}}"  data-is-auto-updated="{{category.is_auto_updated}}"></div>
+  <div id="category_id_data" data-category-id="{{ category.pk }}" data-is-auto-updated="{{ category.is_auto_updated }}"></div>
 
   {% if form_message %}
     <div class="row mt-3" id="alert">
@@ -94,8 +114,6 @@
       </div>
     </div>
   {% endif %}
-
-  
 
   {% if assets_count != 0 %}
     <div class="container-fluid">
@@ -116,88 +134,76 @@
   {% endif %}
 
   {% if assets_count != 0 %}
-  <div class="row mt-3">
-    <div class="col-lg-8 d-flex flex-column">
-      <div class="row flex-grow">
-        <div class="col-12 grid-margin stretch-card">
-          <div class="card card-rounded">
-            <div class="card-body">
-              <div class="d-sm-flex justify-content-between align-items-start">
-                <div>
-                  <h4 class="card-title card-title-dash">Varlık Performansı</h4>
-                  <p class="card-subtitle card-subtitle-dash">Burada varlığınıza yönlendirdiğiniz meblağ ve günlük performansı yer alır.</p>
-                </div>
-                <div class="dropdown-container">
-                  <div class="dropdown me-2">
-                    <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Parite </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      {% for currency in currencies  %}
-                        <a class="dropdown-item" data-currency-id="{{currency.pk}}" >{{currency.currency_code}}</a>                  
-                      {% endfor %}
-                      
-    
-                    </div>
-                  </div>
-                  <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Periyod </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                      <a class="dropdown-item" data-time-period="daily">Günlük</a>
-                      <a class="dropdown-item" data-time-period="weekly">Haftalık</a>
-                      <a class="dropdown-item" data-time-period="monthly">Aylık</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="d-sm-flex align-items-center mt-1 justify-content-between">
-                <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                  <h2 class="me-2 fw-bold" id="graph_parity"></h2>
-                  <h4 class="me-2" id="graph_period"></h4>
-                </div>
-                <div class="me-3">
-                  <div id="performanceLine-legend"></div>
-                </div>
-              </div>
-              <div class="chartjs-bar-wrapper mt-3">
-                <canvas id="performanceLine" width="603" height="150" style="display: block; box-sizing: border-box; height: 150px; width: 603px;"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-    <div class="col-lg-4 d-flex flex-column">
-      <div class="row flex-grow">
-        <div class="col-12 grid-margin stretch-card">
-          <div class="card card-rounded">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="card-title card-title-dash">Type By Amount</h4>
-                  </div>
+    <div class="row mt-3">
+      <div class="col-lg-8 d-flex flex-column">
+        <div class="row flex-grow">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="card card-rounded">
+              <div class="card-body">
+                <div class="d-sm-flex justify-content-between align-items-start">
                   <div>
-                    <canvas class="my-auto" id="assetPieGraph" width="300" height="150" style="display: block; box-sizing: border-box; height: 150px; width:300px;"></canvas>
-                    <img src="{% static 'images/loading.gif' %}" class="loading" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Loading" />
+                    <h4 class="card-title card-title-dash">Varlık Performansı</h4>
+                    <p class="card-subtitle card-subtitle-dash">Burada varlığınıza yönlendirdiğiniz meblağ ve günlük performansı yer alır.</p>
                   </div>
-                  <div id="assetPieGraph-legend" class="mt-5 text-center">
-
+                  <div class="dropdown-container">
+                    <div class="dropdown me-2">
+                      <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parite</button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        {% for currency in currencies %}
+                          <a class="dropdown-item" data-currency-id="{{ currency.pk }}">{{ currency.currency_code }}</a>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="dropdown">
+                      <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Periyod</button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                        <a class="dropdown-item" data-time-period="daily">Günlük</a>
+                        <a class="dropdown-item" data-time-period="weekly">Haftalık</a>
+                        <a class="dropdown-item" data-time-period="monthly">Aylık</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                    <h2 class="me-2 fw-bold" id="graph_parity"></h2>
+                    <h4 class="me-2" id="graph_period"></h4>
+                  </div>
+                  <div class="me-3">
+                    <div id="performanceLine-legend"></div>
+                  </div>
+                </div>
+                <div class="chartjs-bar-wrapper mt-3">
+                  <canvas id="performanceLine" width="603" height="100%" style="display: block; box-sizing: border-box; height: 100%; width: 603px;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 d-flex flex-column">
+        <div class="row flex-grow">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="card card-rounded">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <h4 class="card-title card-title-dash">Varlık Dağılımı</h4>
+                    </div>
+                    <div>
+                      <canvas class="my-auto" id="assetPieGraph" width="300" height="100%" style="display: block; box-sizing: border-box; height: 100%; width:300px;"></canvas>
+                      <img src="{% static 'images/loading.gif' %}" class="loading" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Loading" />
+                    </div>
+                    <div id="assetPieGraph-legend" class="mt-5 text-center"></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
-
       </div>
-
-
     </div>
-
-  </div>
-    
-  
   {% endif %}
 
   <div class="row mt-3">
@@ -206,7 +212,9 @@
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">{{ category.name }} varlıkları</h4>
-            <p>Varlıkların güncelleme tarihi: <strong>{{latest_asset_time}}</strong></p>
+            <p>
+              Varlıkların güncelleme tarihi: <strong>{{ latest_asset_time }}</strong>
+            </p>
             <div class="table-responsive">
               <table class="table table-striped">
                 <thead>
@@ -242,15 +250,7 @@
                         <button data-asset-id="{{ asset.pk }}" data-asset-type="{{ asset.number|stringformat:'0.2f' }} {{ asset.unit_type.name }} {{ asset.asset_type.name }}" data-bs-toggle="modal" data-bs-target="#deleteAssetModal" type="button" class="btn btn-danger btn-rounded btn-sm btn-fw"><i class="fa-solid fa-trash text-white"></i></button>
                       </td>
                       <td>
-                        <button data-asset-asset-id="{{ asset.pk }}" 
-                        data-asset-asset-type="{{ asset.asset_type.pk }}" 
-                        data-asset-buy-date="{{ asset.buy_date }}" 
-                        data-asset-buy-unit-price="{{ asset.buy_unit_price }}" 
-                        data-asset-number="{{ asset.number }}" 
-                        data-asset-unit-type="{{ asset.unit_type.pk }}" 
-                        data-asset-account="{{ asset.account.pk }}" 
-                        data-asset-currency="{{ asset.currency.pk }}" 
-                        data-bs-toggle="modal" data-bs-target="#updateAssetModal" type="button" class="btn btn-info btn-rounded btn-icon"><i class="fa-solid fa-pen-to-square text-white"></i></button>
+                        <button data-asset-asset-id="{{ asset.pk }}" data-asset-asset-type="{{ asset.asset_type.pk }}" data-asset-buy-date="{{ asset.buy_date }}" data-asset-buy-unit-price="{{ asset.buy_unit_price }}" data-asset-number="{{ asset.number }}" data-asset-unit-type="{{ asset.unit_type.pk }}" data-asset-account="{{ asset.account.pk }}" data-asset-currency="{{ asset.currency.pk }}" data-bs-toggle="modal" data-bs-target="#updateAssetModal" type="button" class="btn btn-info btn-rounded btn-icon"><i class="fa-solid fa-pen-to-square text-white"></i></button>
                       </td>
                     </tr>
                   {% endfor %}
@@ -294,8 +294,6 @@
 
   <!-- Include for insert asset modal -->
   {% include 'assets/_assetModal.html' with modal_id='insertAssetModal' modal_title='Yeni Varlık Ekle' submit_button_text='Kaydet' operation='insert' form=create_asset_form form_prefix='insert' %}
-
-  
 
   <!-- New Asset Type Modal -->
   <div class="modal fade" id="newAssetTypeModal" tabindex="-1" aria-labelledby="newAssetTypeModal" aria-hidden="true">
@@ -394,6 +392,4 @@
   <script src="{% static '/js/custom-charts.js' %}"></script>
 
   <script src="{% static '/js/asset.js' %}"></script>
-  
-
 {% endblock %}

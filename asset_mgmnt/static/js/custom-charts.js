@@ -77,7 +77,7 @@ async function createDoughnutChart(endpoint, elementId) {
             
             const span = document.createElement('span');
             span.style.backgroundColor = chart.data.datasets[0].backgroundColor[i];
-            
+            span.classList.add('add-width')
             li.appendChild(span);
             li.appendChild(document.createTextNode(chart.data.labels[i]));
             ul.appendChild(li);
