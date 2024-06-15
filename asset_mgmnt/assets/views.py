@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from collections import defaultdict
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from .models import Account, Currency, Asset, AssetType, UnitType, Category, AssetTimeData
@@ -175,20 +176,23 @@ class PageObjects(BaseTemplateObjects):
 
     return asset_parities_list
    
-   def create_doughnut_chart_data(self,  data):
+   def create_doughnut_chart_data(self, data):   
+
+      # Grouping assets by name and summing their values
+      grouped_assets = defaultdict(float)
+      for asset in data:
+         grouped_assets[asset['name']] += asset['parities']['TRY']
       
-      simplified_assets = [{'name': asset['name'], 'value': asset['parities']['TRY']} for asset in data]
+      simplified_assets = [{'name': name, 'value': value} for name, value in grouped_assets.items()]
       total_value = sum(asset['value'] for asset in simplified_assets)
 
       colors = [
-            "#1F3BB3", "#05C3FB", "#34B1AA", "#F95F53", "#E29E09", "#51B1E1", "#E9E9E9",
-            # Additional colors that complement the existing palette
-            "#166D8B", "#0492C2", "#B15F34", "#C98B2F", "#B1D034", "#4E8AE6", "#8C52FF",
-            "#FFC61E", "#FF7477", "#9EE09E", "#CC99C9", "#C390D4", "#A7D0CD", "#FFD3B4",
-            "#DECBA4", "#FAD0C9", "#9C6D57", "#99B898", "#D1E8E4"
-         ]
-      
-            
+         "#1F3BB3", "#05C3FB", "#34B1AA", "#F95F53", "#E29E09", "#51B1E1", "#E9E9E9",
+         "#166D8B", "#0492C2", "#B15F34", "#C98B2F", "#B1D034", "#4E8AE6", "#8C52FF",
+         "#FFC61E", "#FF7477", "#9EE09E", "#CC99C9", "#C390D4", "#A7D0CD", "#FFD3B4",
+         "#DECBA4", "#FAD0C9", "#9C6D57", "#99B898", "#D1E8E4"
+      ]
+
       doughnut_chart_data = []
       for asset, color in zip(simplified_assets, colors):
          try:
@@ -197,13 +201,14 @@ class PageObjects(BaseTemplateObjects):
             ratio = 0
 
          doughnut_chart_data.append({
-               'name': asset['name'],
-               'value': asset['value'],
-               'ratio': ratio,
-               'color': color
+            'name': asset['name'],
+            'value': asset['value'],
+            'ratio': ratio,
+            'color': color
          })
 
       return doughnut_chart_data
+
    
    def get_index_objects(self):
       self.objects['all_asset_count'] = Asset.objects.count()      
